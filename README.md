@@ -10,10 +10,11 @@ Things you will need:
   - a desired mail server, either smtp.gmail.com or imap.gmail.com
   - a specific FROM_CONDITION, which is just a string condition equal to the email 
       address you are receiving from
-  - a specific SUBJECT_CONDITION, which is just 2 special character that are looked for 
+  - a specific SUBJECT_CONDITION, which is just 2 special characters that are looked for 
       at the beginning of an email's subject field. 
       
-      Example: #>New Client
+      Example: '#>New Client'
+      
       In the above example, the 2 special characters are '#>'. Those would need to be set in 
       the __init__ method, and your emails that you are trying to open would need to have those
       characters as the first 2 in the subject.
