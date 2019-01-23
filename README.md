@@ -17,7 +17,7 @@ Things you will need:
       
       In the above example, the 2 special characters are '#>'. Those would need to be set in 
       the __init__ method, and your emails that you are trying to open would need to have those
-      characters as the first 2 in the subject.
+      characters as the first 2 characters in the subject field of the email.
 
 The parse_and_commit() method will most likely need to be modified to your application. You can 
 then add your own logic for adding data to your database.
