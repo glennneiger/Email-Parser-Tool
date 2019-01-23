@@ -32,10 +32,21 @@ class EmailParserTool:
         self.mail = ''
 
     def connect(self):
+        """
+        Connects to email account.
+        """
         self.mail = imaplib.IMAP4_SSL(self.MAIL_SERVER)
         self.mail.login(self.EMAIL_USRNME, self.EMAIL_PASSWD)
 
     def get_messages(self):
+        """
+        Mail object first selects the email account's inbox. Then looks for emails based
+        on the desired EMAIL_STATE. If status is OK, mail object fetches the emails in the
+        desired state. If emails meet the FROM and SUBJECT CONDITIONS, they are opened and
+        sent to the parse_and_commit() method. After work load is complete, mail object
+        closes the connection.
+        """
+
         # Select inbox and get all messages
         self.mail.select('INBOX')
         status, messages = self.mail.search(None, self.EMAIL_STATE)
