@@ -7,7 +7,7 @@ Python 3.7. This uses the imaplib and email libraries.
 Things you will need:
   - gmail account
   - gmail account app password
-  - a desired mail server, either smtp.gmail.com or imap.gmail.com
+  - the desired mail server, either smtp.gmail.com or imap.gmail.com
   - a specific FROM_CONDITION, which is just a string condition equal to the email 
       address you are receiving from
   - a specific SUBJECT_CONDITION, which is just 2 special characters that are looked for 
