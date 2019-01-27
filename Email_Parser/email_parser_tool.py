@@ -3,40 +3,42 @@ import email
 
 
 class EmailParserTool:
-    def __init__(self):
+    def __init__(self, domain, username, password, server, from_condition,
+                 subject_condition, email_state):
         """
         These are the settings for the email account and email grabbing conditions.
-        Replace asterisks with your data.
 
-        EMAIL_DOMAIN: The domain name, such as '@gmail.com'
-        EMAIL_USRNME: The username of the email before the '@' symbol.
-        EMAIL_PASSWD: The password for the account. Probably will need to setup an
+        :param domain: The domain name, such as '@gmail.com'
+        :param username: The username of the email before the '@' symbol.
+        :param password: The password for the account. Probably will need to setup an
             app password so outside parties can connect.
-        MAIL_SERVER: Use either 'smtp.gmail.com' or 'imap.gmail.com'
-        FROM_CONDITION: This is used to make sure only emails are opened from a certain
+        :param server: Use either 'smtp.gmail.com' or 'imap.gmail.com'
+        :param from_condition: This is used to make sure only emails are opened from a certain
             sender.
-        SUBJECT_CONDITION: This is used to make sure only emails are opened with a specific 2
+        :param subject_condition: This is used to make sure only emails are opened with a specific 2
             special characters at beginning of subject. Prevents unwanted emails from being
             opened. Idea is that this overall model will be used to only extract specific emails
-        EMAIL_STATE: Enter 'ALL' for all emails, or 'UNSEEN' to view unread emails
-        mail: Mail object used for logging and fetching emails
+        :param email_state: Enter 'ALL' for all emails, or 'UNSEEN' to view unread emails
+        :param mail: Mail object used for logging and fetching emails
         """
-        self.EMAIL_DOMAIN = "***"
-        self.EMAIL_USRNME = "***" + self.EMAIL_DOMAIN
-        self.EMAIL_PASSWD = "***"
-        self.MAIL_SERVER = '***'
-        self.FROM_CONDITION = '***'
-        self.SUBJECT_CONDITION = '***'
-        self.EMAIL_STATE = '***'
+
+        self.domain = domain
+        self.username = username + self.domain
+        self.password = password
+        self.server = server
+        self.from_condition = from_condition
+        self.subject_condition = subject_condition
+        self.email_state = email_state
         # Leave self.mail alone
-        self.mail = ''
+        self.mail = None
 
     def connect(self):
         """
         Connects to email account.
         """
-        self.mail = imaplib.IMAP4_SSL(self.MAIL_SERVER)
-        self.mail.login(self.EMAIL_USRNME, self.EMAIL_PASSWD)
+
+        self.mail = imaplib.IMAP4_SSL(self.server)
+        self.mail.login(self.username, self.password)
 
     def get_messages(self):
         """
@@ -49,7 +51,7 @@ class EmailParserTool:
 
         # Select inbox and get all messages
         self.mail.select('INBOX')
-        status, messages = self.mail.search(None, self.EMAIL_STATE)
+        status, messages = self.mail.search(None, self.email_state)
 
         if status == 'OK':
             for msg_num in messages[0].split():
@@ -57,8 +59,8 @@ class EmailParserTool:
                 for raw_msg in data:
                     if isinstance(raw_msg, tuple):
                         new_email = email.message_from_bytes(raw_msg[1])
-                        if self.FROM_CONDITION in new_email['From']:
-                            if new_email['Subject'][0:2] == self.SUBJECT_CONDITION:
+                        if self.from_condition in new_email['From']:
+                            if new_email['Subject'][0:2] == self.subject_condition:
                                 msg = new_email.get_payload()
                                 self.parse_and_commit(msg)
 
@@ -70,6 +72,7 @@ class EmailParserTool:
         Each line is then placed into appropriate variable. This will need to be adjusted per
         application.
         """
+
         # Email contents are split by each new line
         formatted_email = email_.splitlines()
 
