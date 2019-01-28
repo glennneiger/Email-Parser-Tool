@@ -1,5 +1,6 @@
 import imaplib
 import email
+import configparser
 
 
 class EmailParserTool:
@@ -40,7 +41,7 @@ class EmailParserTool:
         self.mail = imaplib.IMAP4_SSL(self.server)
         self.mail.login(self.username, self.password)
 
-    def get_messages(self):
+    def get_message(self):
         """
         Mail object first selects the email account's inbox. Then looks for emails based
         on the desired EMAIL_STATE. If status is OK, mail object fetches the emails in the
@@ -62,7 +63,8 @@ class EmailParserTool:
                         if self.from_condition in new_email['From']:
                             if new_email['Subject'][0:2] == self.subject_condition:
                                 msg = new_email.get_payload()
-                                self.parse_and_commit(msg)
+                                self.mail.close()
+                                return msg
 
         self.mail.close()
 
@@ -73,16 +75,14 @@ class EmailParserTool:
         application.
         """
 
-        # Email contents are split by each new line
         formatted_email = email_.splitlines()
 
-        # Individual email content lines are accessed by index and placed in variable
         loan_type = formatted_email[0]
         business_name = formatted_email[1]
         business_class = formatted_email[2]
         first_name = formatted_email[4].split(' ')[0]
         last_name = formatted_email[4].split(' ')[1]
-        email = formatted_email[5]
+        email_address = formatted_email[5]
         business_phone = formatted_email[6]
         mobile_phone = formatted_email[7]
         zip_code = formatted_email[8]
@@ -98,4 +98,47 @@ class EmailParserTool:
         physical_biz_location = formatted_email[23]
         business_plan = formatted_email[24]
 
-        # Add logic for adding data to your database
+        return loan_type, business_name, business_class, first_name, last_name, email_address, \
+        business_phone, mobile_phone, zip_code, business_type, loan_option, \
+        loan_amount, avg_monthly_income, credit_score, retirement, company_type, \
+        business_length, company_website, physical_biz_location, business_plan
+
+
+def config_section_map(section):
+    dict1 = {}
+    options = c.options(section)
+    for option in options:
+        dict1[option] = c.get(section, option)
+
+    return dict1
+
+
+def main():
+    global c
+    c = configparser.ConfigParser()
+    c.read("params.txt")
+
+    domain = config_section_map("SectionOne")["domain"]
+    username = config_section_map("SectionOne")["username"]
+    password = config_section_map("SectionOne")["password"]
+    server = config_section_map("SectionOne")["server"]
+    from_condition = config_section_map("SectionOne")["from condition"]
+    subject_condition = config_section_map("SectionOne")["subject condition"]
+    email_state = config_section_map("SectionOne")["email state"]
+
+    email_tool = EmailParserTool(domain, username, password, server,
+                                 from_condition, subject_condition,
+                                 email_state)
+
+    try:
+        email_tool.connect()
+    except:
+        print("Connection Error, check username and password.")
+
+    msg = email_tool.get_message()
+    if msg is not None:
+        data = email_tool.parse_and_commit(msg)
+
+
+if __name__ == "__main__":
+    main()

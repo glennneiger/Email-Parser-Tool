@@ -1,0 +1,8 @@
+[SectionOne]
+Domain:
+Username:
+Password:
+Server:
+From Condition:
+Subject Condition:
+Email State:
