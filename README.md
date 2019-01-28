@@ -21,4 +21,7 @@ Things you will need:
 
 The parse_and_commit() method will most likely need to be modified to your application. You can 
 then add your own logic for adding data to your database.
+
+If you want to use this in script form and not in a project, simply add in your parameters 
+into params.txt and run directly from email_parser_tool.py
   
