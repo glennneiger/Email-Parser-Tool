@@ -1,4 +1,4 @@
-# Email-Grabber-and-Parser
+# Email Parser Tool
 Accesses an email account through the imap or smtp gmail servers and parses the data
 
 # What you need to know
