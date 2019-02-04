@@ -138,6 +138,7 @@ def main():
     msg = email_tool.get_message()
     if msg is not None:
         data = email_tool.parse_and_commit(msg)
+        # Do something with data
 
 
 if __name__ == "__main__":
