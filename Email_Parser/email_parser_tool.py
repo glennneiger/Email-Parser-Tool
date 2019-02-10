@@ -20,7 +20,6 @@ class EmailParserTool:
             special characters at beginning of subject. Prevents unwanted emails from being
             opened. Idea is that this overall model will be used to only extract specific emails
         :param email_state: Enter 'ALL' for all emails, or 'UNSEEN' to view unread emails
-        :param mail: Mail object used for logging and fetching emails
         """
 
         self.domain = domain
@@ -30,7 +29,6 @@ class EmailParserTool:
         self.from_condition = from_condition
         self.subject_condition = subject_condition
         self.email_state = email_state
-        # Leave self.mail alone
         self.mail = None
 
     def connect(self):
@@ -44,8 +42,8 @@ class EmailParserTool:
     def get_message(self):
         """
         Mail object first selects the email account's inbox. Then looks for emails based
-        on the desired EMAIL_STATE. If status is OK, mail object fetches the emails in the
-        desired state. If emails meet the FROM and SUBJECT CONDITIONS, they are opened and
+        on the desired email_state. If status is OK, mail object fetches the emails in the
+        desired state. If emails meet the from and subject_condition, they are opened and
         sent to the parse_and_commit() method. After work load is complete, mail object
         closes the connection.
         """
